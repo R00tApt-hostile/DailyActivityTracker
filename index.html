@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Activities Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1><i class="fas fa-tasks"></i> Daily Activities Tracker</h1>
+                <div class="theme-toggle">
+                    <button id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+                </div>
+            </div>
+            <div class="date-display" id="currentDate"></div>
+        </header>
+        
+        <div class="app-controls">
+            <div class="view-toggle">
+                <button class="view-btn active" id="listViewBtn"><i class="fas fa-list"></i> List</button>
+                <button class="view-btn" id="calendarViewBtn"><i class="far fa-calendar-alt"></i> Calendar</button>
+            </div>
+            
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="Search activities...">
+                <select id="filterCategory">
+                    <option value="all">All Categories</option>
+                    <option value="work">Work</option>
+                    <option value="study">Study</option>
+                    <option value="exercise">Exercise</option>
+                    <option value="personal">Personal</option>
+                    <option value="other">Other</option>
+                </select>
+                <select id="filterPriority">
+                    <option value="all">All Priorities</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <button id="filterTagsBtn">Filter by Tags <i class="fas fa-tags"></i></button>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <input type="text" id="activityInput" placeholder="Enter your activity...">
+            <select id="categorySelect">
+                <option value="work">Work</option>
+                <option value="study">Study</option>
+                <option value="exercise">Exercise</option>
+                <option value="personal">Personal</option>
+                <option value="other">Other</option>
+            </select>
+            <select id="prioritySelect">
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+                <option value="low">Low Priority</option>
+            </select>
+            <input type="text" id="tagsInput" placeholder="Tags (comma separated)">
+            <input type="time" id="startTimeInput" value="08:00">
+            <input type="time" id="endTimeInput" value="09:00">
+            <button id="addBtn"><i class="fas fa-plus"></i> Add Activity</button>
+        </div>
+        
+        <div class="pomodoro-section">
+            <div class="pomodoro-timer">
+                <div class="timer-display" id="pomodoroTimer">25:00</div>
+                <div class="pomodoro-controls">
+                    <button id="pomodoroStartBtn"><i class="fas fa-play"></i></button>
+                    <button id="pomodoroPauseBtn"><i class="fas fa-pause"></i></button>
+                    <button id="pomodoroResetBtn"><i class="fas fa-redo"></i></button>
+                    <select id="pomodoroMode">
+                        <option value="work">Work</option>
+                        <option value="shortBreak">Short Break</option>
+                        <option value="longBreak">Long Break</option>
+                    </select>
+                </div>
+            </div>
+            <div class="pomodoro-info">
+                <span id="pomodoroStatus">Ready to work</span>
+                <span id="pomodoroCount">Pomodoros: 0</span>
+            </div>
+        </div>
+        
+        <div class="goals-section">
+            <h3>Daily Goals</h3>
+            <div class="goal-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="goalProgressBar"></div>
+                </div>
+                <span id="goalProgressText">0/5 activities completed</span>
+            </div>
+            <div class="goal-controls">
+                <input type="number" id="dailyGoalInput" min="1" max="20" value="5">
+                <button id="updateGoalBtn">Update Goal</button>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="clearAllBtn"><i class="fas fa-trash-alt"></i> Clear All</button>
+            <button id="saveDayBtn"><i class="fas fa-save"></i> Save Day</button>
+            <button id="viewHistoryBtn"><i class="fas fa-history"></i> View History</button>
+            <button id="exportDataBtn"><i class="fas fa-file-export"></i> Export</button>
+            <button id="importDataBtn"><i class="fas fa-file-import"></i> Import</button>
+        </div>
+        
+        <div class="activities-list" id="activitiesList">
+            <!-- Activities will be added here -->
+        </div>
+        
+        <div class="calendar-view" id="calendarView" style="display: none;">
+            <!-- Calendar will be rendered here -->
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <span class="stat-value" id="totalActivities">0</span>
+                <span class="stat-label">Total Activities</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="completedActivities">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="productivityScore">0%</span>
+                <span class="stat-label">Productivity</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="totalTime">0h 0m</span>
+                <span class="stat-label">Total Time</span>
+            </div>
+        </div>
+        
+        <div class="tags-container" id="tagsContainer">
+            <!-- Active tags will be displayed here -->
+        </div>
+    </div>
+    
+    <!-- History Modal -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Activity History</h2>
+            <div class="history-container" id="historyContainer">
+                <!-- History will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tags Filter Modal -->
+    <div class="modal" id="tagsFilterModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Filter by Tags</h2>
+            <div class="tags-filter-container" id="tagsFilterContainer">
+                <!-- Tags for filtering will be loaded here -->
+            </div>
+            <div class="modal-actions">
+                <button id="applyTagsFilterBtn">Apply Filter</button>
+                <button id="clearTagsFilterBtn">Clear Filter</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Import/Export Modal -->
+    <div class="modal" id="dataModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 id="dataModalTitle">Export Data</h2>
+            <div class="data-format-selector">
+                <button class="format-btn active" data-format="json">JSON</button>
+                <button class="format-btn" data-format="csv">CSV</button>
+            </div>
+            <textarea id="dataTextarea" placeholder="Data will appear here..."></textarea>
+            <div class="modal-actions">
+                <button id="copyDataBtn"><i class="far fa-copy"></i> Copy</button>
+                <button id="downloadDataBtn"><i class="fas fa-download"></i> Download</button>
+                <button id="importConfirmBtn" style="display: none;"><i class="fas fa-check"></i> Import</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="script.js"></script>
+</body>
+</html>
